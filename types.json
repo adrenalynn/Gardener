@@ -1,0 +1,10 @@
+{
+	"gardener.gardenhoe" : {
+		"categories" : [
+			"jobs"
+		],
+		"isSolid" : false,
+		"isPlaceable" : false,
+		"icon" : "./icons/gardenhoe.png"
+	}
+}

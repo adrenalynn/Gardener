@@ -1,0 +1,23 @@
+[
+	{
+		"icon": "./icons/gardenhoe.png",
+		"key": "gardener.research.gardenhoe",
+		"iterationCount": 10,
+		"iterationRequirements" : [
+			{ "type": "wheat", "amount": 1 },
+			{ "type": "barley", "amount": 1 },
+			{ "type": "flax", "amount": 1 },
+			{ "type": "hollyhock", "amount": 1 },
+			{ "type": "alkanet", "amount": 1 },
+			{ "type": "wolfsbane", "amount": 1 }
+		],
+		"dependencies": [
+			"pipliz.baseresearch.wheatfarming",
+			"pipliz.baseresearch.barleyfarmer",
+			"pipliz.baseresearch.herbfarming"
+		],
+		"unlocksRecipes": [
+			"gardener.crafter.gardenhoe"
+		]
+	}
+]

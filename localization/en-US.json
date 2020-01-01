@@ -1,0 +1,29 @@
+{
+	"types" : {
+		"gardener.gardenhoe" : "Garden Hoe"
+	},
+	"typeuses" : {
+		"gardener.gardenhoe" : "Farm grass and/or convert dirt to grass"
+	},
+	"sentences": {
+		"gardener" : {
+			"research": {
+				"gardenhoe": {
+					"name" : "Garden Hoe",
+					"description" : "Versatile tool for hard ground work."
+				}
+			},
+			"menu": {
+				"mainheader" : "Gardener Job Settings",
+				"grasstype" : "Select type",
+				"autoremove" : "Auto remove on complete",
+				"okbutton" : "Ok",
+				"typelabel" : "Default is the biome default grass type but you can select any other type",
+				"autoLabel": "Autoremove is useful when converting dirt to grass"
+			},
+			"job": {
+				"areatype": "Gardener Area"
+			}
+		}
+	}
+}

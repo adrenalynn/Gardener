@@ -1,0 +1,37 @@
+[
+	{
+		"name" : "Gardener",
+		"description" : "grow and harvest grass",
+		"version" : "0.7.1",
+		"isoptional" : true,
+		"dllpath" : "Gardener.dll",
+		"compatibleversions" : [
+			"0.7.1"
+		],
+		"jsonFiles" : [
+			{ "fileType" : "addNewTypes",
+				"relativePath" : "types.json"
+			},
+			{ "fileType" : "addOrReplaceNPCTypes",
+				"relativePath" : "npc_types.json"
+			},
+			{ "fileType": "addOrOverrideLocalization",
+				"relativePath": "localization/en-US.json"
+			},
+			{ "fileType": "addOrReplaceNPCRecipes",
+				"relativePath": "recipes_crafter.json",
+				"npcType": "pipliz.crafter",
+				"limitsUIMapping": [ "workbench" ]
+			},
+			{ "fileType": "addScience",
+				"index" : -1000000,
+				"relativePath": "science.json"
+			}
+		],
+		"patchnotes": [
+			{ "version": "0.7.1", "notes": [
+				"initial version"
+			] }
+		]
+	}
+]

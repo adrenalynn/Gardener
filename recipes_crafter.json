@@ -1,0 +1,15 @@
+[
+	{
+		"defaultLimit" : 3,
+		"defaultPriority" : -100,
+		"isOptional": true,
+		"name" : "gardener.crafter.gardenhoe",
+		"requires" : [
+			{ "amount": 1, "type": "planks" },
+			{ "amount": 1, "type": "bronzeingot" }
+		],
+		"results" : [
+			{ "type": "gardener.gardenhoe" }
+		]
+	}
+]
