@@ -2,7 +2,7 @@
 	{
 		"name" : "Gardener",
 		"description" : "grow and harvest grass",
-		"version" : "0.7.1",
+		"version" : "0.7.2",
 		"isoptional" : true,
 		"dllpath" : "Gardener.dll",
 		"compatibleversions" : [
@@ -29,6 +29,9 @@
 			}
 		],
 		"patchnotes": [
+			{ "version": "0.7.2", "notes": [
+				"after safe+reload the worker sometimes skipped a tile"
+			] },
 			{ "version": "0.7.1", "notes": [
 				"initial version"
 			] }

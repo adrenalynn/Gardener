@@ -27,7 +27,7 @@ namespace Gardener {
 			this.yBlocks = new ItemTypes.ItemType[height + 3];
 		}
 
-		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, int npcID, Vector3Int subPos, ushort type, bool isDefault = true, bool autoRemove = true, int stepx = 1): base(definition, owner, min, max, npcID)
+		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, int npcID, Vector3Int subPos, ushort type, bool isDefault = true, bool autoRemove = true, int stepx = 0): base(definition, owner, min, max, npcID)
 		{
 			this.pos = subPos;
 			this.GrassType = ItemTypes.GetType(type);
@@ -41,10 +41,24 @@ namespace Gardener {
 		// iterate over all reachable blocks of the area
 		public override void CalculateSubPosition()
 		{
+			// this happens only once at creation of the job
 			if (pos == Vector3Int.invalidPos) {
 				pos = positionMin;
 				positionSub = pos;
 				return;
+			}
+
+			// after save/load it is undefined if the npc already worked on the current tile
+			// re-work the same position to ensure it
+			if (stepx == 0) {
+				positionSub = pos;
+				// direction of the steps can be calculated by even | odd
+				int z = pos.z - positionMin.z;
+				if (z % 2 != 0 || z == 1) {
+					stepx = -1;
+				} else {
+					stepx = 1;
+				}
 			}
 
 			bool validPos = false;
@@ -161,7 +175,6 @@ namespace Gardener {
 				.SetAs("t", GrassType.ItemIndex)
 				.SetAs("d", defaultType)
 				.SetAs("a", autoRemove)
-				.SetAs("s", stepx)
 			);
 		}
 

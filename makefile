@@ -14,7 +14,7 @@ $(dllname): src/*.cs
 $(zipname): $(dllname) $(zip_files_extra)
 	$(RM) $(zipname)
 	mkdir -p $(builddir)
-	cp -r modInfo.json LICENSE README.md $(dllname) $(zip_files_extra) $(builddir)/
+	cp -r LICENSE README.md $(dllname) $(zip_files_extra) $(builddir)/
 	zip -r $(zipname) $(builddir)
 	$(RM) -r $(builddir)
 
