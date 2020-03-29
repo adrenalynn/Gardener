@@ -107,7 +107,7 @@ namespace Gardener {
 			args.TryGetAsOrDefault("grassType", out i, 0);
 			// type 0 is for 'biome default', means using the top block
 			if (i > 0) {
-				GrassType = Gardener.grassTypes[i + 1];
+				GrassType = Gardener.grassTypes[i - 1];
 			} else {
 				defaultType = true;
 			}
