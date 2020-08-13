@@ -32,8 +32,8 @@ namespace Gardener {
 		[ModLoader.ModCallbackProvidesFor("createareajobdefinitions")]
 		public static void AfterItemTypesDefined()
 		{
-			GardenerJobSettings GardenerSettings = new GardenerJobSettings();
-			AreaJobTracker.RegisterAreaJobDefinition(GardenerSettings);
+			GardenerJobSettings vGardenerJobSettings = new GardenerJobSettings();
+			AreaJobTracker.RegisterAreaJobDefinition(vGardenerJobSettings);
 
 			grassTypes = new List<ItemTypes.ItemType>();
 			grassTypes.Add(ItemTypes.GetType("grasscolddry"));
@@ -87,9 +87,9 @@ namespace Gardener {
 			}
 
 			List<string> allGrassTypes = new List<string>();
-			allGrassTypes.Add("Biome default");
+			allGrassTypes.Add(Localization.GetSentence(player.LastKnownLocale, "gardener.defaultGrass"));
 			foreach (ItemTypes.ItemType item in grassTypes) {
-				allGrassTypes.Add(item.Name);
+				allGrassTypes.Add(Localization.GetType(player.LastKnownLocale, item));
 			}
 			NetworkMenu menu = new NetworkMenu {
 				Identifier = "gardener.jobmenu",

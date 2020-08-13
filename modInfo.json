@@ -2,11 +2,11 @@
 	{
 		"name" : "Gardener",
 		"description" : "grow and harvest grass",
-		"version" : "0.7.4",
+		"version" : "0.7.5",
 		"isoptional" : true,
 		"dllpath" : "Gardener.dll",
 		"compatibleversions" : [
-			"0.7.1"
+			"0.7.1","0.7.2","0.7.3","0.7.4"
 		],
 		"jsonFiles" : [
 			{ "fileType" : "addNewTypes",
@@ -29,6 +29,9 @@
 			}
 		],
 		"patchnotes": [
+			{ "version": "0.7.5", "notes": [
+				"display localized grass names instead of just type name"
+			] },
 			{ "version": "0.7.4", "notes": [
 				"fix grass type selection"
 			] },

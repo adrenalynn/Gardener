@@ -23,7 +23,8 @@
 			},
 			"job": {
 				"areatype": "Gardener Area"
-			}
+			},
+			"defaultGrass" : "Biome default"
 		}
 	}
 }
