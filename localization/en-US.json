@@ -15,11 +15,10 @@
 			},
 			"menu": {
 				"mainheader" : "Gardener Job Settings",
-				"grasstype" : "Select type",
 				"autoremove" : "Auto remove on complete",
 				"okbutton" : "Ok",
-				"typelabel" : "Default is the biome default grass type but you can select any other type",
-				"autoLabel": "Autoremove is useful when converting dirt to grass"
+				"typelabel" : "Select the desired grass type",
+				"autoLabel": "Restore the original grass and then stop"
 			},
 			"job": {
 				"areatype": "Gardener Area"

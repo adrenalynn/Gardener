@@ -103,15 +103,18 @@ namespace Gardener {
 			menu.LocalStorage.SetAs("autoRemove", playerSettings.autoRemove);
 
 			Label typeLabel = new Label("gardener.menu.typelabel");
-			DropDown grassType = new DropDown("gardener.menu.grasstype", "grassType", allGrassTypes);
+			DropDownNoLabel grassType = new DropDownNoLabel("grassType", allGrassTypes, 30, 300f, 0f, 0f);
 
+			EmptySpace vertSpace = new EmptySpace(20);
 			Label autoLabel = new Label("gardener.menu.autoLabel");
 			Toggle autoRemove = new Toggle("gardener.menu.autoremove", "autoRemove");
 			ButtonCallback okButton = new ButtonCallback("gardener.menu.okbutton", new LabelData("gardener.menu.okbutton"), 40, 25, ButtonCallback.EOnClickActions.ClosePopup);
 			menu.Items.Add(typeLabel);
 			menu.Items.Add(grassType);
+			menu.Items.Add(vertSpace);
 			menu.Items.Add(autoLabel);
 			menu.Items.Add(autoRemove);
+			menu.Items.Add(vertSpace);
 			menu.Items.Add(okButton);
 
 			NetworkMenuManager.SendServerPopup(player, menu);
