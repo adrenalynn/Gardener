@@ -3,6 +3,7 @@ using Shared;
 using Jobs;
 using Chatting;
 using NetworkUI;
+using NetworkUI.AreaJobs;
 using NetworkUI.Items;
 using Pipliz.JSON;
 using System.Collections.Generic;
@@ -154,9 +155,10 @@ namespace Gardener {
 				height = 100;
 			}
 
-			AreaJobTracker.CommandToolTypeData jobData = new AreaJobTracker.CommandToolTypeData();
-			jobData.LocaleEntry = "gardener.job.areatype";
-			jobData.AreaType = "gardener.gardener";
+			GenericCommandToolSettings jobData = new GenericCommandToolSettings();
+			jobData.TranslationKey = "gardener.job.areatype";
+			jobData.Key = "gardener.gardener";
+			jobData.NPCTypeKey = "gardener";
 			jobData.Minimum3DBlockCount = 1;
 			jobData.Maximum3DBlockCount = count * 4;
 			jobData.Minimum2DBlockCount = 1;

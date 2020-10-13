@@ -140,7 +140,7 @@ namespace Gardener {
 				ModLoader.Callbacks.OnNPCGathered.Invoke(this, blockPos, GatherResults);
 				NPC.Inventory.Add(GatherResults);
 				GatheredItemsCount++;
-				if (GatheredItemsCount >= definition.MaxGathersPerRun) {
+				if (GatheredItemsCount >= Definition.MaxGathersPerRun) {
 					shouldDumpInventory = true;
 					GatheredItemsCount = 0;
 				}
@@ -155,11 +155,15 @@ namespace Gardener {
 			state.SetCooldown(1.0);
 		}
 
-		public override void SaveAreaJob(JSONNode colonyRootNode)
+		public override void SaveAreaJob(JSONNode areasRootNode)
 		{
-			if (!colonyRootNode.TryGetChild(definition.Identifier, out JSONNode node)) {
+			if (!IsValid) {
+				return;
+			}
+
+			if (!areasRootNode.TryGetChild(Definition.Identifier, out JSONNode node)) {
 				node = new JSONNode(NodeType.Array);
-				colonyRootNode[definition.Identifier] = node;
+				areasRootNode[Definition.Identifier] = node;
 			}
 			node.AddToArray(new JSONNode(NodeType.Object)
 				.SetAs("npc", (NPC != null) ? NPC.ID : 0)
