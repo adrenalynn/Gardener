@@ -39,9 +39,11 @@ namespace Gardener {
 				z = node.GetAsOrDefault("zi", int.MinValue)
 			};
 			int type = node.GetAsOrDefault("t", 0);
+			int sx = node.GetAsOrDefault("sx", 1);
+			int sz = node.GetAsOrDefault("sz", 1);
 			bool isDefault = node.GetAsOrDefault("d", true);
 			bool autoRemove = node.GetAsOrDefault("a", true);
-			return new GardenerJobInstance(this, owner, min, max, npcid, pos, (ushort)type, isDefault, autoRemove, 0);
+			return new GardenerJobInstance(this, owner, min, max, npcid, pos, sx, sz, (ushort)type, isDefault, autoRemove);
 		}
 
 	}

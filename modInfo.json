@@ -2,11 +2,11 @@
 	{
 		"name" : "Gardener",
 		"description" : "grow and harvest grass",
-		"version" : "0.7.5",
+		"version" : "1.0.1",
 		"isoptional" : true,
 		"dllpath" : "Gardener.dll",
 		"compatibleversions" : [
-			"0.7.1","0.7.2","0.7.3","0.7.4"
+			"0.7.1","0.7.2","0.7.3","0.7.4","0.8.0"
 		],
 		"jsonFiles" : [
 			{ "fileType" : "addNewTypes",
@@ -29,9 +29,11 @@
 			}
 		],
 		"patchnotes": [
-			{ "version": "0.7.5", "notes": [
-				"updated for CS 0.7.5",
-				"display localized grass names instead of just type name"
+			{ "version": "1.0.1", "notes": [
+				"display localized grass names instead of just type name",
+				"crops on top of the area will automatically be removed",
+				"optimized pathing, it should now never skip blocks",
+				"science now only requires herb farming and three ingredients"
 			] },
 			{ "version": "0.7.4", "notes": [
 				"fix grass type selection"

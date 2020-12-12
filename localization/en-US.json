@@ -8,9 +8,9 @@
 	"sentences": {
 		"gardener" : {
 			"research": {
-				"gardenhoe": {
-					"name" : "Garden Hoe",
-					"description" : "Versatile tool for hard ground work."
+				"gardening": {
+					"name" : "Gardening",
+					"description" : "Beautification is important"
 				}
 			},
 			"menu": {
