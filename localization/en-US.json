@@ -24,6 +24,11 @@
 				"areatype": "Gardener Area"
 			},
 			"defaultGrass" : "Biome default"
+		},
+		"popup": {
+			"tooljob": {
+				"gardenerfarm": "Gardener"
+			}
 		}
 	}
 }

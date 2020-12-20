@@ -2,7 +2,7 @@
 	{
 		"name" : "Gardener",
 		"description" : "grow and harvest grass",
-		"version" : "1.0.1",
+		"version" : "1.0.2",
 		"isoptional" : true,
 		"dllpath" : "Gardener.dll",
 		"compatibleversions" : [
@@ -29,6 +29,10 @@
 			}
 		],
 		"patchnotes": [
+			{ "version": "1.0.1", "notes": [
+				"integrated into the command tool flax&herbs menus",
+				"garden hoe item is used only for recruiting"
+			] },
 			{ "version": "1.0.1", "notes": [
 				"display localized grass names instead of just type name",
 				"crops on top of the area will automatically be removed",

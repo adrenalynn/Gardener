@@ -27,6 +27,7 @@ namespace Gardener {
 		public static ItemTypes.ItemType GardenerItem;
 		public static List<ItemTypes.ItemType> grassTypes;
 		public static Dictionary<Players.Player, GardenerSettings> PlayerJobSettings;
+		public static GardenerCommandTool CommandTool;
 
 		// Initialize the mod
 		[ModLoader.ModCallback(ModLoader.EModCallbackType.AfterItemTypesDefined, NAMESPACE + ".RegisterJob")]
@@ -55,89 +56,8 @@ namespace Gardener {
 
 			PlayerJobSettings = new Dictionary<Players.Player, GardenerSettings>();
 			GardenerItem = ItemTypes.GetType("gardener.gardenhoe");
+			CommandTool = new GardenerCommandTool();
 			Log.Write($"Gardener job activated successfully");
-		}
-
-		// Check R and L clicks with the garden hoe
-		[ModLoader.ModCallback(ModLoader.EModCallbackType.OnPlayerClicked, NAMESPACE + ".OnPlayerClicked")]
-		public static void OnPlayerClicked(Players.Player player, PlayerClickedData data)
-		{
-			if (data.TypeSelected != GardenerItem.ItemIndex || player.ActiveColony == null) {
-				return;
-			}
-
-			if (data.ClickType == PlayerClickedData.EClickType.Left) {
-				SendGardenerJobSelectionUI(player);
-			} else {
-				if (!PlayerJobSettings.ContainsKey(player)) {
-					SendGardenerJobSelectionUI(player);
-				} else {
-					StartAreaSelectTool(player);
-				}
-			}
-		}
-
-		// Send job selection UI
-		public static void SendGardenerJobSelectionUI(Players.Player player)
-		{
-			GardenerSettings playerSettings;
-			if (PlayerJobSettings.ContainsKey(player)) {
-				playerSettings = PlayerJobSettings[player];
-			} else {
-				playerSettings = new GardenerSettings(0, 1);
-			}
-
-			List<string> allGrassTypes = new List<string>();
-			allGrassTypes.Add(Localization.GetSentence(player.LastKnownLocale, "gardener.defaultGrass"));
-			foreach (ItemTypes.ItemType item in grassTypes) {
-				allGrassTypes.Add(Localization.GetType(player.LastKnownLocale, item));
-			}
-			NetworkMenu menu = new NetworkMenu {
-				Identifier = "gardener.jobmenu",
-				TextColor = UnityEngine.Color.black,
-				Height = -1,
-				Width = -1,
-				ForceClosePopups = true
-			};
-			menu.LocalStorage.SetAs("header", Localization.GetSentence(player.LastKnownLocale, "gardener.menu.mainheader"));
-			menu.LocalStorage.SetAs("grassType", playerSettings.grassType);
-			menu.LocalStorage.SetAs("autoRemove", playerSettings.autoRemove);
-
-			Label typeLabel = new Label("gardener.menu.typelabel");
-			DropDownNoLabel grassType = new DropDownNoLabel("grassType", allGrassTypes, 30, 300f, 0f, 0f);
-
-			EmptySpace vertSpace = new EmptySpace(20);
-			Label autoLabel = new Label("gardener.menu.autoLabel");
-			Toggle autoRemove = new Toggle("gardener.menu.autoremove", "autoRemove");
-			ButtonCallback okButton = new ButtonCallback("gardener.menu.okbutton", new LabelData("gardener.menu.okbutton"), 40, 25, ButtonCallback.EOnClickActions.ClosePopup);
-			menu.Items.Add(typeLabel);
-			menu.Items.Add(grassType);
-			menu.Items.Add(vertSpace);
-			menu.Items.Add(autoLabel);
-			menu.Items.Add(autoRemove);
-			menu.Items.Add(vertSpace);
-			menu.Items.Add(okButton);
-
-			NetworkMenuManager.SendServerPopup(player, menu);
-		}
-
-		// Receive job selection UI settings
-		[ModLoader.ModCallback(ModLoader.EModCallbackType.OnPlayerPushedNetworkUIButton, NAMESPACE + ".OnPlayerPushedNetworkUIButton")]
-		public static void OnPlayerPushedNetworkUIButton(NetworkUI.ButtonPressCallbackData data)
-		{
-			if (data.ButtonIdentifier != "gardener.menu.okbutton") {
-				return;
-			}
-			GardenerSettings playerSettings;
-			if (PlayerJobSettings.ContainsKey(data.Player)) {
-				playerSettings = PlayerJobSettings[data.Player];
-			} else {
-				playerSettings = new GardenerSettings(0, 1);
-			}
-			data.Storage.TryGetAs("grassType", out playerSettings.grassType);
-			data.Storage.TryGetAs("autoRemove", out playerSettings.autoRemove);
-			PlayerJobSettings[data.Player] = playerSettings;
-			StartAreaSelectTool(data.Player);
 		}
 
 		// start area select tool to create a job

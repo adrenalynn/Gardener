@@ -25,7 +25,7 @@ namespace Gardener {
 		private E_STEP innerStep;
 		private ItemTypes.ItemType[] yBlocks;
 
-		// constructor (from CommandTool/Menu, setting will be applied with callback)
+		// constructor (from CommandTool/Menu, settings will be applied with callback)
 		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, int npcID = 0) : base(definition, owner, min, max, npcID)
 		{
 			this.pos = Vector3Int.invalidPos;
@@ -34,7 +34,7 @@ namespace Gardener {
 			this.yBlocks = new ItemTypes.ItemType[height + 3];
 
 			// have NPC walk along the longer axis
-			if (positionMax.x - positionMin.x > positionMax.z - positionMin.z) {
+			if (System.Math.Abs(positionMax.x - positionMin.x) > System.Math.Abs(positionMax.z - positionMin.z)) {
 				innerStep = E_STEP.Xfirst;
 			} else {
 				innerStep = E_STEP.Zfirst;
@@ -107,10 +107,8 @@ namespace Gardener {
 					pos.x += stepx;
 				} else {
 					if (stepx > 0) {
-						//pos.x = positionMin.x;
 						stepx = -1;
 					} else {
-						//pos.x = positionMax.x;
 						stepx = 1;
 					}
 					// step Z second
@@ -131,10 +129,8 @@ namespace Gardener {
 					pos.z += stepz;
 				} else {
 					if (stepz > 0) {
-						//pos.z = positionMin.z;
 						stepz = -1;
 					} else {
-						//pos.z = positionMax.z;
 						stepz = 1;
 					}
 					// step X second
@@ -156,7 +152,7 @@ namespace Gardener {
 		// calculate next spot to work on
 		public override void CalculateSubPosition()
 		{
-			// this happens at creation of the job or after loading
+			// this happens at creation of the job
 			if (stepx == 0 && stepz == 0) {
 				CalculateStart();
 			} else {
@@ -166,6 +162,7 @@ namespace Gardener {
 			bool workablePos = IsWorkableBlock();
 			while (!workablePos && !loopedAround) {
 				IterateToNextPos();
+				workablePos = IsWorkableBlock();
 			}
 
 			if (loopedAround) {
