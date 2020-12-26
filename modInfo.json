@@ -29,6 +29,10 @@
 			}
 		],
 		"patchnotes": [
+			{ "version": "1.0.2", "notes": [
+				"fixed a crash with pathing in north-south direction",
+				"with default convert mode it now skips blocks that are already of target type"
+			] },
 			{ "version": "1.0.1", "notes": [
 				"integrated into the command tool flax&herbs menus",
 				"garden hoe item is used only for recruiting"

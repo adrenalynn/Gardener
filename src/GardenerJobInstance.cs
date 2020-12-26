@@ -21,6 +21,7 @@ namespace Gardener {
 		private bool defaultType;
 		private bool autoRemove;
 		private bool loopedAround;
+		private bool firstCheckAfterSaveLoad;
 		private int stepx, stepz, height;
 		private E_STEP innerStep;
 		private ItemTypes.ItemType[] yBlocks;
@@ -30,6 +31,7 @@ namespace Gardener {
 		{
 			this.pos = Vector3Int.invalidPos;
 			this.loopedAround = false;
+			this.firstCheckAfterSaveLoad = false;
 			this.height = max.y - min.y + 1;
 			this.yBlocks = new ItemTypes.ItemType[height + 3];
 
@@ -45,13 +47,24 @@ namespace Gardener {
 		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, int npcID, Vector3Int npcPos, int sx, int sz, ushort type, bool isDefault = true, bool autoRemove = true): base(definition, owner, min, max, npcID)
 		{
 			this.pos = npcPos;
+			this.loopedAround = false;
+			this.height = max.y - min.y + 1;
+			this.yBlocks = new ItemTypes.ItemType[height + 3];
 			this.GrassType = ItemTypes.GetType(type);
 			this.defaultType = isDefault;
 			this.autoRemove = autoRemove;
-			this.height = max.y - min.y + 1;
-			this.yBlocks = new ItemTypes.ItemType[height + 3];
 			this.stepx = sx;
 			this.stepz = sz;
+
+			// have NPC walk along the longer axis
+			if (System.Math.Abs(positionMax.x - positionMin.x) > System.Math.Abs(positionMax.z - positionMin.z)) {
+				innerStep = E_STEP.Xfirst;
+			} else {
+				innerStep = E_STEP.Zfirst;
+			}
+
+			// flag to force work the current block
+			firstCheckAfterSaveLoad = true;
 		}
 		
 		// set the custom options (grass type | auto remove)
@@ -92,7 +105,7 @@ namespace Gardener {
 				stepz = 1;
 				pos.z = positionMin.z;
 			} else {
-				stepx = -1;
+				stepz = -1;
 				pos.z = positionMax.z;
 			}
 			return;
@@ -156,7 +169,11 @@ namespace Gardener {
 			if (stepx == 0 && stepz == 0) {
 				CalculateStart();
 			} else {
-				IterateToNextPos();
+				if (!firstCheckAfterSaveLoad) {
+					IterateToNextPos();
+				} else {
+					firstCheckAfterSaveLoad = false;
+				}
 			}
 
 			bool workablePos = IsWorkableBlock();
@@ -194,6 +211,14 @@ namespace Gardener {
 			}
 
 			if (yBlocks[y - 1].IsFertile && !yBlocks[y].BlocksPathing && !yBlocks[y + 1].BlocksPathing) {
+				// in convert mode skip blocks that already are the target type
+				if (defaultType) {
+					TerrainGenerator gen = (TerrainGenerator)ServerManager.TerrainGenerator;
+					GrassType = ItemTypes.GetType(gen.QueryData(pos.x, pos.z).Biome.TopBlockType);
+				}
+				if (autoRemove && yBlocks[y - 1].ItemIndex == GrassType.ItemIndex) {
+					return false;
+				}
 				pos.y = positionMin.y + y - 1;
 				return true;
 			}
