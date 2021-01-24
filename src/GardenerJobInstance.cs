@@ -25,6 +25,7 @@ namespace Gardener {
 		private int stepx, stepz, height;
 		private E_STEP innerStep;
 		private ItemTypes.ItemType[] yBlocks;
+		private List<ItemTypes.ItemTypeDrops> GatherResults;
 
 		// constructor (from CommandTool/Menu, settings will be applied with callback)
 		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, int npcID = 0) : base(definition, owner, min, max, npcID)
@@ -34,6 +35,7 @@ namespace Gardener {
 			this.firstCheckAfterSaveLoad = false;
 			this.height = max.y - min.y + 1;
 			this.yBlocks = new ItemTypes.ItemType[height + 3];
+			this.GatherResults = new List<ItemTypes.ItemTypeDrops>();
 
 			// have NPC walk along the longer axis
 			if (System.Math.Abs(positionMax.x - positionMin.x) > System.Math.Abs(positionMax.z - positionMin.z)) {
@@ -50,6 +52,7 @@ namespace Gardener {
 			this.loopedAround = false;
 			this.height = max.y - min.y + 1;
 			this.yBlocks = new ItemTypes.ItemType[height + 3];
+			this.GatherResults = new List<ItemTypes.ItemTypeDrops>();
 			this.GrassType = ItemTypes.GetType(type);
 			this.defaultType = isDefault;
 			this.autoRemove = autoRemove;
@@ -264,6 +267,18 @@ namespace Gardener {
 					// remove old crops from on top the block
 					if (blockAbove.NeedsBase) {
 						ServerManager.TryChangeBlock(positionSub, BlockTypes.BuiltinBlocks.Types.air, Owner, ESetBlockFlags.DefaultAudio);
+						GatherResults.Clear();
+						List<ItemTypes.ItemTypeDrops> onRemoveItems = blockAbove.OnRemoveItems;
+						for (int i = 0; i < onRemoveItems.Count; i++) {
+							GatherResults.Add(onRemoveItems[i]);
+						}
+						GatheredItemsCount++;
+						if (GatheredItemsCount >= base.Definition.MaxGathersPerRun) {
+							shouldDumpInventory = true;
+							GatheredItemsCount = 0;
+						}
+						ModLoader.Callbacks.OnNPCGathered.Invoke(this, positionSub, GatherResults);
+						NPC.Inventory.Add(GatherResults);
 					}
 				}
 			}

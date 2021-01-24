@@ -2,7 +2,7 @@
 	{
 		"name" : "Gardener",
 		"description" : "grow and harvest grass",
-		"version" : "1.0.2",
+		"version" : "1.0.3",
 		"isoptional" : true,
 		"dllpath" : "Gardener.dll",
 		"compatibleversions" : [
@@ -29,6 +29,9 @@
 			}
 		],
 		"patchnotes": [
+			{ "version": "1.0.3", "notes": [
+				"when crop is removed during convert it is now added to the stockpile"
+			] },
 			{ "version": "1.0.2", "notes": [
 				"fixed a crash with pathing in north-south direction",
 				"with default convert mode it now skips blocks that are already of target type"
