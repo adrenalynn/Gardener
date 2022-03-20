@@ -1,7 +1,8 @@
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using Pipliz;
 using Jobs;
 using NPC;
-using System.Collections.Generic;
 using TerrainGeneration;
 using BlockTypes;
 
@@ -27,7 +28,7 @@ namespace Gardener {
 		private List<ItemTypes.ItemTypeDrops> GatherResults;
 
 		// constructor (from CommandTool/Menu, settings will be applied with callback)
-		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, int npcID = 0) : base(definition, owner, min, max, npcID)
+		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, NPCID? npcID) : base(definition, owner, min, max, npcID)
 		{
 			this.pos = Vector3Int.invalidPos;
 			this.loopedAround = false;
@@ -35,52 +36,49 @@ namespace Gardener {
 			this.height = max.y - min.y + 1;
 			this.yBlocks = new ItemTypes.ItemType[height + 3];
 			this.GatherResults = new List<ItemTypes.ItemTypeDrops>();
-
-			// have NPC walk along the longer axis
-			if (System.Math.Abs(positionMax.x - positionMin.x) > System.Math.Abs(positionMax.z - positionMin.z)) {
-				innerStep = E_STEP.Xfirst;
-			} else {
-				innerStep = E_STEP.Zfirst;
-			}
+			SetStepDirection();
 		}
 
 		// constructor (from savegame)
-		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, int npcID, Vector3Int npcPos, int sx, int sz, ushort type, bool isDefault = true, bool autoRemove = true): base(definition, owner, min, max, npcID)
+		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, NPCID? npcID, JObject miscData): base(definition, owner, min, max, npcID)
 		{
-			this.pos = npcPos;
+			this.pos = miscData.GetValue("workPos").ToObject<Vector3Int>();
 			this.loopedAround = false;
 			this.height = max.y - min.y + 1;
 			this.yBlocks = new ItemTypes.ItemType[height + 3];
 			this.GatherResults = new List<ItemTypes.ItemTypeDrops>();
-			this.GrassType = ItemTypes.GetType(type);
-			this.defaultType = isDefault;
-			this.autoRemove = autoRemove;
-			this.stepx = sx;
-			this.stepz = sz;
-
-			// have NPC walk along the longer axis
-			if (System.Math.Abs(positionMax.x - positionMin.x) > System.Math.Abs(positionMax.z - positionMin.z)) {
-				innerStep = E_STEP.Xfirst;
-			} else {
-				innerStep = E_STEP.Zfirst;
-			}
+			this.GrassType = ItemTypes.GetType((ushort)miscData.GetValue("type"));
+			this.defaultType = (bool)miscData.GetValue("isDefault");
+			this.autoRemove = (bool)miscData.GetValue("autoRemove");
+			this.stepx = (int)miscData.GetValue("sx");
+			this.stepz = (int)miscData.GetValue("sz");
+			SetStepDirection();
 
 			// flag to force work the current block
 			firstCheckAfterSaveLoad = true;
 		}
-		
-		// set the custom options (grass type | auto remove)
-		public void SetArgument(Pipliz.JSON.JSONNode args)
+
+		public void SetStepDirection()
 		{
-			int i;
-			args.TryGetAsOrDefault("grassType", out i, 0);
+			// have NPC walk along the longer axis
+			if (System.Math.Abs(positionMax.x - positionMin.x) > System.Math.Abs(positionMax.z - positionMin.z)) {
+				this.innerStep = E_STEP.Xfirst;
+			} else {
+				this.innerStep = E_STEP.Zfirst;
+			}
+		}
+
+		// set the custom options (grass type | auto remove)
+		public void SetArgument(JObject args)
+		{
+			int i = (int)args.GetValue("grassType");
 			// type 0 is for 'biome default', using the top block
 			if (i > 0) {
 				GrassType = Gardener.grassTypes[i - 1];
 			} else {
 				defaultType = true;
 			}
-			args.TryGetAsOrDefault("autoRemove", out autoRemove, true);
+			autoRemove = (bool)args.GetValue("autoRemove");
 		}
 
 		// Define a starting position and calculate stepping
@@ -230,6 +228,7 @@ namespace Gardener {
 		// have the NPC work one tile
 		public override void OnNPCAtJob(ref NPCBase.NPCState state)
 		{
+			GardenerJobSettings settings = (GardenerJobSettings)this.Definition;
 			Vector3Int blockPos = positionSub;
 			blockPos.y--;
 
@@ -254,7 +253,7 @@ namespace Gardener {
 				ModLoader.Callbacks.OnNPCGathered.Invoke(this, blockPos, GatherResults);
 				NPC.Inventory.Add(GatherResults);
 				GatheredItemsCount++;
-				if (GatheredItemsCount >= Definition.MaxGathersPerRun) {
+				if (GatheredItemsCount >= settings.MaxGathersPerRun) {
 					shouldDumpInventory = true;
 					GatheredItemsCount = 0;
 				}
@@ -272,7 +271,7 @@ namespace Gardener {
 							GatherResults.Add(onRemoveItems[i]);
 						}
 						GatheredItemsCount++;
-						if (GatheredItemsCount >= base.Definition.MaxGathersPerRun) {
+						if (GatheredItemsCount >= settings.MaxGathersPerRun) {
 							shouldDumpInventory = true;
 							GatheredItemsCount = 0;
 						}
@@ -286,33 +285,18 @@ namespace Gardener {
 			state.SetCooldown(1.0);
 		}
 
-		public override void SaveAreaJob(JSONNode areasRootNode)
+		// custom data for saving
+		public override JToken GetMiscSaveData()
 		{
-			if (!IsValid) {
-				return;
-			}
+			JObject miscData = new JObject();
+			miscData.Add("workPos", JToken.FromObject(this.pos));
+			miscData.Add("sx", this.stepx);
+			miscData.Add("sz", this.stepz);
+			miscData.Add("type", this.GrassType.ItemIndex);
+			miscData.Add("isDefault", this.defaultType);
+			miscData.Add("autoRemove", this.autoRemove);
 
-			if (!areasRootNode.TryGetChild(Definition.Identifier, out JSONNode node)) {
-				node = new JSONNode(NodeType.Array);
-				areasRootNode[Definition.Identifier] = node;
-			}
-			node.AddToArray(new JSONNode(NodeType.Object)
-				.SetAs("npc", (NPC != null) ? NPC.ID : 0)
-				.SetAs("x-", positionMin.x)
-				.SetAs("y-", positionMin.y)
-				.SetAs("z-", positionMin.z)
-				.SetAs("xd", positionMax.x - positionMin.x)
-				.SetAs("yd", positionMax.y - positionMin.y)
-				.SetAs("zd", positionMax.z - positionMin.z)
-				.SetAs("xi", pos.x)
-				.SetAs("yi", pos.y)
-				.SetAs("zi", pos.z)
-				.SetAs("sx", stepx)
-				.SetAs("sz", stepz)
-				.SetAs("t", GrassType.ItemIndex)
-				.SetAs("d", defaultType)
-				.SetAs("a", autoRemove)
-			);
+			return miscData;
 		}
 
 	}

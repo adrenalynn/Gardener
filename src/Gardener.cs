@@ -6,6 +6,7 @@ using NetworkUI;
 using NetworkUI.AreaJobs;
 using NetworkUI.Items;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Gardener {
 
@@ -63,9 +64,9 @@ namespace Gardener {
 		public static void StartAreaSelectTool(Players.Player player)
 		{
 			GardenerSettings playerSettings = PlayerJobSettings[player];
-			JSONNode data = new JSONNode();
-			data.SetAs("grassType", playerSettings.grassType);
-			data.SetAs("autoRemove", playerSettings.autoRemove);
+			JObject data = new JObject();
+			data.Add("grassType", playerSettings.grassType);
+			data.Add("autoRemove", playerSettings.autoRemove);
 
 			// use regular farm limits as default, autoRemove (=convert dirt) allows larger area
 			int count = 100, height = 4;

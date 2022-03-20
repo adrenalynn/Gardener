@@ -51,9 +51,9 @@ namespace Gardener {
 				Width = -1,
 				ForceClosePopups = true
 			};
-			menu.LocalStorage.SetAs("header", Localization.GetSentence(player.LastKnownLocale, "gardener.menu.mainheader"));
-			menu.LocalStorage.SetAs("grassType", playerSettings.grassType);
-			menu.LocalStorage.SetAs("autoRemove", playerSettings.autoRemove);
+			menu.LocalStorage.Add("header", Localization.GetSentence(player.LastKnownLocale, "gardener.menu.mainheader"));
+			menu.LocalStorage.Add("grassType", playerSettings.grassType);
+			menu.LocalStorage.Add("autoRemove", playerSettings.autoRemove);
 
 			menu.Items.Add(new Label("gardener.menu.typelabel"));
 			menu.Items.Add(new DropDownNoLabel("grassType", allGrassTypes, 30, 300f, 0f, 0f));
@@ -75,8 +75,8 @@ namespace Gardener {
 			} else {
 				playerSettings = new Gardener.GardenerSettings(0, 1);
 			}
-			data.Storage.TryGetAs("grassType", out playerSettings.grassType);
-			data.Storage.TryGetAs("autoRemove", out playerSettings.autoRemove);
+			playerSettings.grassType = (int)data.Storage.GetValue("grassType");
+			playerSettings.autoRemove = (int)data.Storage.GetValue("autoRemove");
 			Gardener.PlayerJobSettings[data.Player] = playerSettings;
 			Gardener.StartAreaSelectTool(data.Player);
 		}

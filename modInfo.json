@@ -2,11 +2,12 @@
 	{
 		"name" : "Gardener",
 		"description" : "grow and harvest grass",
-		"version" : "1.0.3",
+		"version" : "1.0.4",
 		"isoptional" : true,
+		"enableddefault" : true,
 		"dllpath" : "Gardener.dll",
 		"compatibleversions" : [
-			"0.7.1","0.7.2","0.7.3","0.7.4","0.8.0"
+			"0.9.0"
 		],
 		"jsonFiles" : [
 			{ "fileType" : "addNewTypes",
@@ -29,6 +30,9 @@
 			}
 		],
 		"patchnotes": [
+			{ "version": "1.0.4", "notes": [
+				"updated for Colony Survival 0.9"
+			] },
 			{ "version": "1.0.3", "notes": [
 				"when crop is removed during convert it is now added to the stockpile"
 			] },
