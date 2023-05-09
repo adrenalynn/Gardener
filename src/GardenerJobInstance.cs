@@ -60,10 +60,10 @@ namespace Gardener {
 			bool autoRemove;
 			int sx, sz;
 			miscData.TryGetAs<int>("wx", out x);
-			miscData.TryGetAs<int>("wx", out y);
-			miscData.TryGetAs<int>("wx", out z);
+			miscData.TryGetAs<int>("wy", out y);
+			miscData.TryGetAs<int>("wz", out z);
 			miscData.TryGetAs<int>("sx", out sx);
-			miscData.TryGetAs<int>("sx", out sz);
+			miscData.TryGetAs<int>("sz", out sz);
 			miscData.TryGetAs<ushort>("type", out type);
 			miscData.TryGetAs<bool>("autoRemove", out autoRemove);
 			this.pos = new Vector3Int(x, y, z);
@@ -99,8 +99,6 @@ namespace Gardener {
 			*/
 			GrassType = Gardener.grassTypes[i];
 			autoRemove = (bool)args.GetValue("autoRemove");
-			Log.Write($"Using grasstype index={i}");
-			Log.Write($"Using autoRemove={autoRemove}");
 		}
 
 		// Define a starting position and calculate stepping
@@ -215,7 +213,6 @@ namespace Gardener {
 			if (workablePos) {
 				positionSub = pos;
 			}
-			Log.Write($"Calculate SubPosition {workablePos} {pos.x} {pos.z}");
 		}
 
 		// check for a solid fertile block

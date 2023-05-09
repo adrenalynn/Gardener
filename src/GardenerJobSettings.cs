@@ -5,8 +5,10 @@ using NPC;
 
 namespace Gardener {
 
+    [AreaJobDefinitionAutoLoaderAttribute]
 	public class GardenerJobSettings: AbstractAreaJobDefinition
 	{
+
 		public override IAreaJob CreateAreaJob(Colony owner, Vector3Int min, Vector3Int max)
 		{
 			return new GardenerJobInstance(this, owner, min, max, null);
