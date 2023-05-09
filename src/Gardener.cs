@@ -7,10 +7,19 @@ using NetworkUI.AreaJobs;
 using NetworkUI.Items;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using ModLoaderInterfaces;
 
 namespace Gardener {
 
-	[ModLoader.ModManager]
+	public class ModInterfaces: IAfterItemTypesDefined
+	{
+		public void AfterItemTypesDefined()
+		{
+			Gardener.AfterItemTypesDefined();
+		}
+	}
+
+
 	public static class Gardener
 	{
 		public struct GardenerSettings {
@@ -30,29 +39,19 @@ namespace Gardener {
 		public static GardenerCommandTool CommandTool;
 
 		// Initialize the mod
-		[ModLoader.ModCallback(ModLoader.EModCallbackType.AfterItemTypesDefined, NAMESPACE + ".RegisterJob")]
-		[ModLoader.ModCallbackProvidesFor("createareajobdefinitions")]
 		public static void AfterItemTypesDefined()
 		{
 			GardenerJobSettings vGardenerJobSettings = new GardenerJobSettings();
 			AreaJobTracker.RegisterAreaJobDefinition(vGardenerJobSettings);
 
 			grassTypes = new List<ItemTypes.ItemType>();
-			grassTypes.Add(ItemTypes.GetType("grasscolddry"));
-			grassTypes.Add(ItemTypes.GetType("grasscoldmid"));
-			grassTypes.Add(ItemTypes.GetType("grasscoldwet"));
-			grassTypes.Add(ItemTypes.GetType("grasshotdriest"));
-			grassTypes.Add(ItemTypes.GetType("grasshotdry"));
-			grassTypes.Add(ItemTypes.GetType("grasshotmid"));
-			grassTypes.Add(ItemTypes.GetType("grasshotwet"));
-			grassTypes.Add(ItemTypes.GetType("grasstaigadry"));
-			grassTypes.Add(ItemTypes.GetType("grasstaigawet"));
-			grassTypes.Add(ItemTypes.GetType("grasstropicdriest"));
-			grassTypes.Add(ItemTypes.GetType("grasstropicdry"));
-			grassTypes.Add(ItemTypes.GetType("grasstropicmid"));
-			grassTypes.Add(ItemTypes.GetType("grasstropicwet"));
-			grassTypes.Add(ItemTypes.GetType("grasstundradry"));
-			grassTypes.Add(ItemTypes.GetType("grasstundrawet"));
+			grassTypes.Add(ItemTypes.GetType("grassdry"));
+			grassTypes.Add(ItemTypes.GetType("grassfen"));
+			grassTypes.Add(ItemTypes.GetType("grassheath"));
+			grassTypes.Add(ItemTypes.GetType("grassheathpurple"));
+			grassTypes.Add(ItemTypes.GetType("grassmax"));
+			grassTypes.Add(ItemTypes.GetType("grassmid"));
+			grassTypes.Add(ItemTypes.GetType("grasswet"));
 
 			PlayerJobSettings = new Dictionary<Players.Player, GardenerSettings>();
 			GardenerItem = ItemTypes.GetType("gardener.gardenhoe");

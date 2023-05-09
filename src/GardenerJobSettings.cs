@@ -17,10 +17,9 @@ namespace Gardener {
 			return new GardenerJobInstance(this, owner, min, max, npcID, miscData);
 		}
 
-		public override int MaxGathersPerRun { get; set; }
-
 		public GardenerJobSettings()
 		{
+			this.AllowGoalOffset = true;
 			this.Identifier = "gardener.gardener";
 			this.UsedNPCType = NPCType.GetByKeyNameOrDefault("gardener");
 			this.MaxGathersPerRun = 10;

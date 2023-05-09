@@ -20,9 +20,9 @@
 				"relativePath": "localization/en-US.json"
 			},
 			{ "fileType": "addOrReplaceNPCRecipes",
-				"relativePath": "recipes_crafter.json",
-				"npcType": "pipliz.crafter",
-				"limitsUIMapping": [ "workbench" ]
+				"relativePath": "recipes_coppersmith.json",
+				"npcType": "pipliz.coppersmith",
+				"limitsUIMapping": [ "copperanvil" ]
 			},
 			{ "fileType": "addScience",
 				"index" : -1000000,

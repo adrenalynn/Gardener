@@ -12,11 +12,11 @@ namespace Gardener {
 		// CommandTool (1) menu entry
 		public void OnConstructCommandTool(Players.Player player, NetworkMenu menu, string identifier)
 		{
-			if (identifier != "popup.tooljob.flaxherbfarming") {
+			if (identifier != CommandToolManager.Menus.MAIN_MENU) {
 				return;
 			}
 			menu.Items.Add(new EmptySpace(20));
-			CommandToolManager.GenerateTwoColumnCenteredRow(menu, CommandToolManager.GetButtonTool(player, "gardener.gardenerjob", "popup.tooljob.gardenerfarm", 200, false));
+			CommandToolManager.GenerateThreeColumnCenteredRow(menu, CommandToolManager.GetButtonTool(player, "gardener.gardenerjob", "popup.tooljob.gardenerfarm", 200, false));
 		}
 
 		// Check for Gardener menu or job selection
@@ -40,7 +40,7 @@ namespace Gardener {
 			}
 
 			List<string> allGrassTypes = new List<string>();
-			allGrassTypes.Add(Localization.GetSentence(player.LastKnownLocale, "gardener.defaultGrass"));
+			//allGrassTypes.Add(Localization.GetSentence(player.LastKnownLocale, "gardener.defaultGrass"));
 			foreach (ItemTypes.ItemType item in Gardener.grassTypes) {
 				allGrassTypes.Add(Localization.GetType(player.LastKnownLocale, item));
 			}

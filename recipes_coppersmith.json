@@ -1,12 +1,13 @@
 [
 	{
 		"defaultLimit" : 3,
+		"cooldown": 5.0,
 		"defaultPriority" : -100,
 		"isOptional": true,
-		"name" : "gardener.crafter.gardenhoe",
+		"name" : "gardener.gardenhoe",
 		"requires" : [
 			{ "amount": 1, "type": "planks" },
-			{ "amount": 1, "type": "bronzeingot" }
+			{ "amount": 1, "type": "copperingot" }
 		],
 		"results" : [
 			{ "type": "gardener.gardenhoe" }

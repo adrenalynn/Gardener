@@ -9,7 +9,7 @@ gamedir = /local/games/Steam/steamapps/common/Colony\ Survival
 libdir = $(gamedir)/colonyserver_Data/Managed
 
 $(dllname): src/*.cs
-	mcs /target:library -nostdlib -r:$(libdir)/Assembly-CSharp.dll,$(libdir)/UnityEngine.CoreModule.dll,$(libdir)/UnityEngine.TextRenderingModule,$(libdir)/mscorlib.dll,$(libdir)/System.dll,$(libdir)/System.Core.dll,$(libdir)/Steamworks.NET.dll,$(libdir)/Newtonsoft.Json.dll -out:"$(dllname)" -sdk:4 -recurse:'src/*.cs'
+	mcs /target:library -nostdlib -r:$(libdir)/Assembly-CSharp.dll,$(libdir)/UnityEngine.CoreModule.dll,$(libdir)/UnityEngine.TextRenderingModule,$(libdir)/mscorlib.dll,$(libdir)/System.dll,$(libdir)/System.Core.dll,$(libdir)/com.rlabrecque.steamworks.net.dll,$(libdir)/Newtonsoft.Json.dll,$(libdir)/netstandard.dll -out:"$(dllname)" -sdk:4 -recurse:'src/*.cs'
 
 $(zipname): $(dllname) $(zip_files_extra)
 	$(RM) $(zipname)

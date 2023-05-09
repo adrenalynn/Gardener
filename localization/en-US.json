@@ -1,6 +1,9 @@
 {
 	"types" : {
-		"gardener.gardenhoe" : "Garden Hoe"
+		"gardener.gardenhoe" : "Garden Hoe",
+		"grassmax": "Grass Warm",
+        "grassmid": "Grass Cold",
+        "grasswet": "Grass Wet"
 	},
 	"typeuses" : {
 		"gardener.gardenhoe" : "Farm grass and/or convert dirt to grass"
@@ -15,7 +18,7 @@
 			},
 			"menu": {
 				"mainheader" : "Gardener Job Settings",
-				"autoremove" : "Auto remove on complete",
+				"autoremove" : "Auto remove when complete",
 				"okbutton" : "Ok",
 				"typelabel" : "Select the desired grass type",
 				"autoLabel": "Restore the original grass and then stop"

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Pipliz;
 using Jobs;
 using NPC;
-using TerrainGeneration;
+using TerrainGeneration2;
 using BlockTypes;
 
 namespace Gardener {
@@ -18,7 +18,7 @@ namespace Gardener {
 	{
 		private Vector3Int pos;
 		private ItemTypes.ItemType GrassType;
-		private bool defaultType;
+		//private bool defaultType;
 		private bool autoRemove;
 		private bool loopedAround;
 		private bool firstCheckAfterSaveLoad;
@@ -34,28 +34,45 @@ namespace Gardener {
 			this.loopedAround = false;
 			this.firstCheckAfterSaveLoad = false;
 			this.height = max.y - min.y + 1;
+			this.stepx = 0;
+			this.stepz = 0;
 			this.yBlocks = new ItemTypes.ItemType[height + 3];
 			this.GatherResults = new List<ItemTypes.ItemTypeDrops>();
 			SetStepDirection();
+			base.IsDirty = true;
 		}
 
 		// constructor (from savegame)
 		public GardenerJobInstance(IAreaJobDefinition definition, Colony owner, Vector3Int min, Vector3Int max, NPCID? npcID, JObject miscData): base(definition, owner, min, max, npcID)
 		{
-			this.pos = miscData.GetValue("workPos").ToObject<Vector3Int>();
 			this.loopedAround = false;
 			this.height = max.y - min.y + 1;
 			this.yBlocks = new ItemTypes.ItemType[height + 3];
 			this.GatherResults = new List<ItemTypes.ItemTypeDrops>();
-			this.GrassType = ItemTypes.GetType((ushort)miscData.GetValue("type"));
-			this.defaultType = (bool)miscData.GetValue("isDefault");
-			this.autoRemove = (bool)miscData.GetValue("autoRemove");
-			this.stepx = (int)miscData.GetValue("sx");
-			this.stepz = (int)miscData.GetValue("sz");
-			SetStepDirection();
 
 			// flag to force work the current block
-			firstCheckAfterSaveLoad = true;
+			this.firstCheckAfterSaveLoad = true;
+			SetStepDirection();
+
+			//this.pos = miscData.GetValue("workPos").ToObject<Vector3Int>();
+			int x,y,z;
+			ushort type;
+			bool autoRemove;
+			int sx, sz;
+			miscData.TryGetAs<int>("wx", out x);
+			miscData.TryGetAs<int>("wx", out y);
+			miscData.TryGetAs<int>("wx", out z);
+			miscData.TryGetAs<int>("sx", out sx);
+			miscData.TryGetAs<int>("sx", out sz);
+			miscData.TryGetAs<ushort>("type", out type);
+			miscData.TryGetAs<bool>("autoRemove", out autoRemove);
+			this.pos = new Vector3Int(x, y, z);
+			this.stepx = sx;
+			this.stepz = sz;
+			this.GrassType = ItemTypes.GetType(type);
+			//this.defaultType = (bool)miscData.GetValue("isDefault");
+			this.autoRemove = autoRemove;
+
 		}
 
 		public void SetStepDirection()
@@ -72,13 +89,18 @@ namespace Gardener {
 		public void SetArgument(JObject args)
 		{
 			int i = (int)args.GetValue("grassType");
+			/* default type no longer works in 0.9
 			// type 0 is for 'biome default', using the top block
 			if (i > 0) {
 				GrassType = Gardener.grassTypes[i - 1];
 			} else {
 				defaultType = true;
 			}
+			*/
+			GrassType = Gardener.grassTypes[i];
 			autoRemove = (bool)args.GetValue("autoRemove");
+			Log.Write($"Using grasstype index={i}");
+			Log.Write($"Using autoRemove={autoRemove}");
 		}
 
 		// Define a starting position and calculate stepping
@@ -193,6 +215,7 @@ namespace Gardener {
 			if (workablePos) {
 				positionSub = pos;
 			}
+			Log.Write($"Calculate SubPosition {workablePos} {pos.x} {pos.z}");
 		}
 
 		// check for a solid fertile block
@@ -210,12 +233,14 @@ namespace Gardener {
 				return false;
 			}
 
-			if (yBlocks[y - 1].IsFertile && !yBlocks[y].BlocksPathing && !yBlocks[y + 1].BlocksPathing) {
-				// in convert mode skip blocks that already are the target type
+			if (yBlocks[y - 1].BlockFertility != ItemTypes.EFertileState.Not && yBlocks[y].PathingImpactAsAir && yBlocks[y + 1].PathingImpactAsAir) {
+				/*
 				if (defaultType) {
-					TerrainGenerator gen = (TerrainGenerator)ServerManager.TerrainGenerator;
+					TerrainGenerator2 gen = (TerrainGenerator2)ServerManager.TerrainGenerator;
 					GrassType = ItemTypes.GetType(gen.QueryData(pos.x, pos.z).Biome.TopBlockType);
 				}
+				*/
+				// in convert mode skip blocks that already are the target type
 				if (autoRemove && yBlocks[y - 1].ItemIndex == GrassType.ItemIndex) {
 					return false;
 				}
@@ -239,15 +264,17 @@ namespace Gardener {
 				return;
 			}
 
+			/*
 			// for 'biome default' grass calculate it for every sub position
 			// since the area can span multiple biomes
 			if (defaultType) {
-				TerrainGenerator gen = (TerrainGenerator)ServerManager.TerrainGenerator;
+				TerrainGenerator2 gen = (TerrainGenerator2)ServerManager.TerrainGenerator;
 				GrassType = ItemTypes.GetType(gen.QueryData(blockPos.x, blockPos.z).Biome.TopBlockType);
 			}
+			*/
 
 			// block is already grass: farm it
-			if (block.ItemIndex == GrassType.ItemIndex && GrassType.IsFertile) {
+			if (block.ItemIndex == GrassType.ItemIndex) {
 				List<ItemTypes.ItemTypeDrops> GatherResults = new List<ItemTypes.ItemTypeDrops>();
 				GatherResults.Add(new ItemTypes.ItemTypeDrops(GrassType.ItemIndex));
 				ModLoader.Callbacks.OnNPCGathered.Invoke(this, blockPos, GatherResults);
@@ -259,7 +286,7 @@ namespace Gardener {
 				}
 			// otherwise try to convert to grass but prevent converting to sand or snow
 			} else {
-				if (block.IsFertile && GrassType.IsFertile) {
+				if (block.BlockFertility != ItemTypes.EFertileState.Not) {
 					ServerManager.TryChangeBlock(blockPos, GrassType, Owner, ESetBlockFlags.DefaultAudio);
 
 					// remove old crops from on top the block
@@ -289,11 +316,14 @@ namespace Gardener {
 		public override JToken GetMiscSaveData()
 		{
 			JObject miscData = new JObject();
-			miscData.Add("workPos", JToken.FromObject(this.pos));
+			//miscData.Add("workPos", JToken.FromObject(this.pos));
+			miscData.Add("wx", this.pos.x);
+			miscData.Add("wy", this.pos.y);
+			miscData.Add("wz", this.pos.z);
 			miscData.Add("sx", this.stepx);
 			miscData.Add("sz", this.stepz);
 			miscData.Add("type", this.GrassType.ItemIndex);
-			miscData.Add("isDefault", this.defaultType);
+			//miscData.Add("isDefault", this.defaultType);
 			miscData.Add("autoRemove", this.autoRemove);
 
 			return miscData;

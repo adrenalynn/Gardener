@@ -2,17 +2,16 @@
 	{
 		"icon": "./icons/gardenhoe.png",
 		"key": "gardener.research.gardening",
-		"iterationCount": 10,
-		"iterationRequirements" : [
-			{ "type": "hollyhock", "amount": 1 },
-			{ "type": "alkanet", "amount": 1 },
-			{ "type": "wolfsbane", "amount": 1 }
+		"itemRequirements" : [
+			{ "type": "hollyhock", "amount": 10 },
+			{ "type": "alkanet", "amount": 10 },
+			{ "type": "wolfsbane", "amount": 10 }
 		],
 		"dependencies": [
-			"pipliz.baseresearch.herbfarming"
+			"pipliz.dyeing"
 		],
 		"unlocksRecipes": [
-			"gardener.crafter.gardenhoe"
+			"gardener.gardenhoe"
 		]
 	}
 ]

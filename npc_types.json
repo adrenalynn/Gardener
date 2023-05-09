@@ -1,10 +1,7 @@
 [
 	{
-		"data" : {
-			"maskColor1" : "#139f13"
-		},
+		"maskColor1" : "#139f13",
 		"keyName" : "gardener",
-		"npcType" : "worker",
-		"printName" : "Gardener"
+		"npcType" : "worker"
 	}
 ]
